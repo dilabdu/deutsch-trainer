@@ -6,11 +6,31 @@ const norm=s=>(s||"").toLocaleLowerCase("de-DE").normalize("NFD").replace(/[\u03
 function dueWords(){return words.filter(w=>w.uz && w.uz!=="Tarjima kiritilmagan" && (!w.nextReview||w.nextReview<=Date.now()))}
 function render(){
  $("total").textContent=words.length;$("due").textContent=dueWords().length;
- $("wordlist").innerHTML=words.length?words.map((w,i)=>`<div class="word"><div class="row"><strong>${esc(w.de)}</strong><button class="smallbtn" data-del="${i}">O‘chirish</button></div><div>${esc(w.uz)}</div><div class="muted">Sinonimlar: ${esc((w.syn||[]).join(", ")||"—")}</div></div>`).join(""):'<p class="muted">Hozircha lug‘at bo‘sh. “So‘z qo‘shish” bo‘limidan boshlang.</p>';
- document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{words.splice(+b.dataset.del,1);save();if(current&&!words.includes(current))pick()});
+ $("wordlist").innerHTML=words.length?words.map((w,i)=>`<div class="word" data-open="${i}" role="button" tabindex="0" aria-label="${esc(w.de)} tafsilotlarini ochish"><div class="word-main"><div class="word-open"><strong>${esc(w.de)}</strong><div class="word-translation">${esc(w.uz)}</div><div class="word-syn">Sinonimlar: ${esc((w.syn||[]).join(", ")||"—")}</div></div><button class="smallbtn word-delete" data-del="${i}">O‘chirish</button></div></div>`).join(""):'<p class="muted">Hozircha lug‘at bo‘sh. “So‘z qo‘shish” bo‘limidan boshlang.</p>';
+ document.querySelectorAll("[data-open]").forEach(card=>{
+  const open=()=>showWordDetail(words[+card.dataset.open]);
+  card.addEventListener("click",e=>{if(e.target.closest("[data-del]"))return;open()});
+  card.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&!e.target.closest("[data-del]")){e.preventDefault();open()}});
+ });
+ document.querySelectorAll("[data-del]").forEach(b=>b.onclick=e=>{e.stopPropagation();words.splice(+b.dataset.del,1);save();if(current&&!words.includes(current))pick()});
  if(!current||!words.includes(current))pick(false);
 }
 function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function showWordDetail(w){
+ if(!w)return;
+ $("detailterm").textContent=w.de||"";
+ $("detailuz").textContent=w.uz||"Tarjima kiritilmagan";
+ $("detailsyn").textContent=(w.syn||[]).join(", ")||"Hozircha sinonim kiritilmagan";
+ $("detailfamily").textContent=w.family||"Hozircha ma’lumot kiritilmagan";
+ $("detailexample").textContent=w.example||"Hozircha misol gap kiritilmagan";
+ $("detailfamilybox").classList.toggle("hidden",!w.family);
+ $("detailexamplebox").classList.toggle("hidden",!w.example);
+ $("worddetail").classList.remove("hidden");document.body.style.overflow="hidden";
+}
+function closeWordDetail(){$("worddetail").classList.add("hidden");document.body.style.overflow=""}
+$("detailclose").onclick=closeWordDetail;
+$("worddetail").addEventListener("click",e=>{if(e.target===$("worddetail"))closeWordDetail()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("worddetail").classList.contains("hidden"))closeWordDetail()});
 function pick(advance=true){
  const pool=dueWords();current=pool.length?pool[Math.floor(Math.random()*pool.length)]:words.find(w=>w.uz && w.uz!=="Tarjima kiritilmagan")||null;
  $("prompt").textContent=current?current.uz:"Boshlash uchun lug‘at qo‘shing";
