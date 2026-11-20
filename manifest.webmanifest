@@ -1,0 +1,9 @@
+{
+  "name": "Deutsch Trainer",
+  "short_name": "Deutsch",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f4f6fb",
+  "theme_color": "#172554",
+  "icons": []
+}

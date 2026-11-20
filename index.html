@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#172554">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Deutsch Trainer</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#172033;background:#f4f6fb}
+*{box-sizing:border-box}body{margin:0}.top{background:#172554;color:white;padding:24px 18px 28px;border-radius:0 0 24px 24px}
+.top small{opacity:.8}.top h1{margin:8px 0 4px;font-size:27px}.top p{margin:0;opacity:.85}
+main{max-width:680px;margin:auto;padding:16px}.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:-8px}
+.stat,.panel{background:white;border:1px solid #e6eaf2;border-radius:16px;padding:16px;box-shadow:0 4px 18px #15264a0a}
+.stat b{font-size:25px;display:block}.stat span,.muted{color:#68738a;font-size:13px}
+nav{display:flex;gap:8px;margin:16px 0;overflow:auto}
+nav button{white-space:nowrap;border:1px solid #dce2ed;background:white;color:#34415c;padding:10px 14px;border-radius:999px}
+nav button.active{background:#172554;color:white;border-color:#172554}
+h2{font-size:19px;margin:0 0 12px}label{display:block;font-size:13px;color:#59657b;margin:10px 0 5px}
+input,textarea{width:100%;padding:12px;border:1px solid #d8deea;border-radius:10px;font:inherit;background:#fff}
+textarea{min-height:80px;resize:vertical}
+button.primary{background:#1d4ed8;color:white;border:0;border-radius:12px;padding:13px 16px;font:600 15px system-ui;width:100%;margin-top:12px}
+button.secondary{background:#eef2ff;color:#243b75;border:0;border-radius:10px;padding:10px 12px;font:600 14px system-ui}
+button:disabled{opacity:.45}
+.word{padding:12px 0;border-bottom:1px solid #edf0f5}.word:last-child{border:0}
+.word strong{font-size:17px}.tag{font-size:12px;background:#edf2ff;color:#28468e;padding:4px 8px;border-radius:20px}
+.quiz{text-align:center;padding:24px 16px}.question{font-size:27px;font-weight:750;margin:18px 0}.mic{width:82px;height:82px;border-radius:50%;background:#dbeafe;color:#1d4ed8;border:0;font-size:32px}
+.mic.listening{background:#fee2e2;color:#b91c1c;animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.06)}}
+.result{margin-top:15px;padding:13px;border-radius:12px;background:#f1f5f9;text-align:left;white-space:pre-wrap}
+.hidden{display:none!important}.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}
+.smallbtn{border:0;background:#f1f5f9;border-radius:8px;padding:7px 10px}
+.notice{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;padding:12px;border-radius:12px;font-size:13px;line-height:1.5}
+footer{text-align:center;color:#8791a4;font-size:12px;padding:24px}
+</style>
+</head>
+<body>
+<header class="top"><small>SHAXSIY NEMIS TILI MURABBIYI</small><h1>Deutsch Trainer</h1><p>B2 → C1 · So‘zlarni ovoz chiqarib eslab qol</p></header>
+<main>
+<section class="stats">
+ <div class="stat"><b id="total">0</b><span>Jami so‘zlar</span></div>
+ <div class="stat"><b id="due">0</b><span>Takrorlash vaqti kelgan</span></div>
+</section>
+<nav>
+ <button class="active" data-tab="study">Og‘zaki imtihon</button>
+ <button data-tab="words">Lug‘atim</button>
+ <button data-tab="add">So‘z qo‘shish</button>
+</nav>
+<section id="study" class="panel">
+ <div class="row"><h2>O‘zbekchadan nemischaga</h2><span class="tag" id="progress">0 / 0</span></div>
+ <div class="quiz">
+  <div class="muted">Nemischa tarjimani va sinonimlarni ovoz chiqarib ayt</div>
+  <div class="question" id="prompt">Boshlash uchun lug‘at qo‘shing</div>
+  <div class="muted" id="hint"></div>
+  <div style="margin:22px 0"><button class="mic" id="mic" aria-label="Mikrofon">🎙️</button></div>
+  <div class="muted" id="micstatus">Mikrofon tugmasini bosing</div>
+  <div id="result" class="result hidden"></div>
+  <div class="row" style="margin-top:14px">
+   <button class="secondary" id="reveal">Javobni ko‘rsat</button>
+   <button class="secondary" id="next">Keyingi so‘z →</button>
+  </div>
+ </div>
+ <div class="notice">Ovoz tanish Android/Chrome va qurilmadagi nutq xizmatiga bog‘liq. O‘zbekcha nutqni tanish hamma telefonda ishlamasligi mumkin. Birinchi marta mikrofon ruxsatini bering.</div>
+</section>
+<section id="words" class="panel hidden"><h2>Mening lug‘atim</h2><div id="wordlist"></div></section>
+<section id="add" class="panel hidden">
+ <h2>Yangi so‘z qo‘shish</h2>
+ <label>Nemischa so‘z</label><input id="de" placeholder="z. B. die Voraussetzung">
+ <label>O‘zbekcha tarjima</label><input id="uz" placeholder="zaruriy shart, talab">
+ <label>Nemischa sinonimlar (vergul bilan)</label><input id="syn" placeholder="Bedingung, Erfordernis">
+ <label>So‘z oilasi / qo‘shimcha shakllar</label><input id="family" placeholder="voraussetzen (Verb), vorausgesetzt (Partizip II)">
+ <label>Misol gap</label><textarea id="example" placeholder="Gute Deutschkenntnisse sind eine wichtige Voraussetzung."></textarea>
+ <button class="primary" id="save">So‘zni saqlash</button>
+ <hr style="border:0;border-top:1px solid #edf0f5;margin:20px 0">
+ <h2>Tayyor lug‘atni import qilish</h2><p class="muted">ChatGPT tayyorlagan JSON lug‘at faylini tanlang.</p>
+ <input type="file" id="importfile" accept=".json,application/json">
+ <button class="secondary" id="export" style="width:100%;margin-top:10px">Lug‘atimni JSON qilib eksport qilish</button>
+</section>
+<footer>Ma’lumotlar hozircha shu qurilmada saqlanadi.</footer>
+</main>
+<script src="app.js"></script>
+</body></html>
