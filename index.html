@@ -45,6 +45,7 @@ footer{text-align:center;color:#8791a4;font-size:12px;padding:24px}
  <button class="active" data-tab="study">Og‘zaki imtihon</button>
  <button data-tab="words">Lug‘atim</button>
  <button data-tab="add">So‘z qo‘shish</button>
+ <button data-tab="pdf">PDF import</button>
 </nav>
 <section id="study" class="panel">
  <div class="row"><h2>O‘zbekchadan nemischaga</h2><span class="tag" id="progress">0 / 0</span></div>
@@ -76,7 +77,16 @@ footer{text-align:center;color:#8791a4;font-size:12px;padding:24px}
  <input type="file" id="importfile" accept=".json,application/json">
  <button class="secondary" id="export" style="width:100%;margin-top:10px">Lug‘atimni JSON qilib eksport qilish</button>
 </section>
+<section id="pdf" class="panel hidden">
+ <h2>PDF lug‘atni avtomatik import qilish</h2>
+ <p class="muted">PDF faylni tanlang. Dastur uning ichidagi matnni o‘qib, nemischa so‘zlarni ajratadi. Agar qatorda tarjima ham bo‘lsa, uni ham saqlashga harakat qiladi.</p>
+ <label>PDF fayl</label><input type="file" id="pdffile" accept="application/pdf,.pdf">
+ <button class="primary" id="pdfimport">PDF ni o‘qish va lug‘atga qo‘shish</button>
+ <div id="pdfstatus" class="result hidden"></div>
+ <div class="notice" style="margin-top:14px">Muhim: matnli PDF qo‘llanadi. Skaner qilingan, faqat rasm ko‘rinishidagi PDF uchun OCR kerak. PDF faqat nemischa so‘zlardan iborat bo‘lsa, dastur tarjima va sinonimlarni o‘zi o‘ylab topmaydi — ular “Tarjima kiritilmagan” deb belgilanadi. Bunday so‘zlar og‘zaki imtihonda tarjimasi to‘ldirilmaguncha qatnashmaydi.</div>
+</section>
 <footer>Ma’lumotlar hozircha shu qurilmada saqlanadi.</footer>
 </main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="app.js"></script>
 </body></html>
